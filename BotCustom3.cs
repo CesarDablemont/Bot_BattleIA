@@ -47,12 +47,7 @@ public class Custom3
   {
     // Console.ReadKey(true);
 
-
-    if (TimeLastScan <= 1 && BotEnergy > 50)
-    {
-      int Direction = Board.CheckAndShootEnemy();
-      if (Direction != -1) return BotHelper.ActionShoot((MoveDirection)Direction);
-    }
+    // SHIELD
 
     if (HasBeenHit == true && BotEnergy >= 100)
     {
@@ -60,11 +55,26 @@ public class Custom3
       HasBeenHit = false;
     }
 
+    if (BotEnergy > 1000 && CurrentShieldLevel < 100)
+      return BotHelper.ActionShield(200);
+
     if (BotEnergy > 200 && CurrentShieldLevel < 20)
       return BotHelper.ActionShield(50);
 
     if (BotEnergy < 50 && CurrentShieldLevel > 0) // je recupere le shield si j'en ai
       return BotHelper.ActionShield(0);
+
+
+    // ATTACK
+    int Direction = Board.CheckAndShootEnemy();
+
+    if (TimeLastScan <= 1 && BotEnergy > 50 && Direction != -1)
+      return BotHelper.ActionShoot((MoveDirection)Direction);
+
+    if (BotEnergy > 5000 && Direction != -1)
+      return BotHelper.ActionShoot((MoveDirection)Direction);
+
+
 
 
     // RIP PathFinding

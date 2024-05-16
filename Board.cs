@@ -130,74 +130,6 @@ public static class Board
   }
 
 
-
-
-  public static void PrintMap()
-  {
-    foreach (var kvp in Map)
-    {
-      Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
-    }
-  }
-
-
-  public static void DisplayMap()
-  {
-    Console.WriteLine("DisplayMap:");
-
-
-    for (int j = TLcorner.y; j > BRcorner.y - 1; j--)
-    {
-      for (int i = TLcorner.x; i < BRcorner.x + 1; i++)
-      {
-        if (Map.TryGetValue("{" + i + "/" + j + "}", out var state))
-        {
-          switch (state)
-          {
-            case CaseState.Empty: Console.Write("· "); break;
-            case CaseState.Energy: Console.Write("# "); break;
-            case CaseState.Ennemy: Console.Write("* "); break;
-            case CaseState.Wall: Console.Write("██"); break;
-            case CaseState.Virtual: Console.Write("V "); break;
-            default: Console.Write("  "); break;
-          }
-        }
-        else Console.Write("  "); // Pas dans la Map
-
-      }
-      Console.WriteLine();
-    }
-  }
-
-
-  // public static string FormatTwoDigits(int number)
-  // {
-  //   if (number < 10) return "0" + number.ToString();
-  //   return number.ToString();
-  // }
-
-
-  public static void DisplayHeatMap()
-  {
-    Console.WriteLine("DisplayHeatMap:");
-
-    for (int j = TLcorner.y; j > BRcorner.y - 1; j--)
-    {
-      for (int i = TLcorner.x; i < BRcorner.x + 1; i++)
-      {
-        if (HeatMap.TryGetValue("{" + i + "/" + j + "}", out var value))
-          if (i == BotPosition.x && j == BotPosition.y) WriteInColor(ConsoleColor.DarkGreen, value.ToString().PadLeft(3));
-
-          else if (Map[XYtoMapKey(i, j)] == CaseState.Wall) WriteInColor(ConsoleColor.Red, value.ToString().PadLeft(3));
-          else Console.Write(value.ToString().PadLeft(3)); // complete avec des espaces devant pour avoir 3 char de long
-
-        else Console.Write("   "); // Pas dans la Map
-      }
-      Console.WriteLine();
-    }
-  }
-
-
   public static void updateBotPosition(int move)
   {
     PreviousPosition = new MapPoint(BotPosition.x, BotPosition.y);
@@ -217,35 +149,26 @@ public static class Board
   }
 
 
-  public static void ShowPath(List<MapPoint> path)
+
+  public static int CheckAndShootEnemy()
   {
-    Console.WriteLine("Path:");
+    // Nord
+    for (int y = BotPosition.y + 1; y <= TLcorner.y; y++)
+      if (Map.TryGetValue(XYtoMapKey(BotPosition.x, y), out var state) && state == CaseState.Ennemy) return 1;
 
-    foreach (MapPoint point in path)
-    {
-      Console.WriteLine($"({point.x}, {point.y})");
-    }
+    // Sud
+    for (int y = BotPosition.y - 1; y >= BRcorner.y; y--)
+      if (Map.TryGetValue(XYtoMapKey(BotPosition.x, y), out var state) && state == CaseState.Ennemy) return 3;
+
+    // Est
+    for (int x = BotPosition.x + 1; x <= BRcorner.x; x++)
+      if (Map.TryGetValue(XYtoMapKey(x, BotPosition.y), out var state) && state == CaseState.Ennemy) return 2;
+
+    // Ouest
+    for (int x = BotPosition.x - 1; x >= TLcorner.x; x--)
+      if (Map.TryGetValue(XYtoMapKey(x, BotPosition.y), out var state) && state == CaseState.Ennemy) return 4;
+
+    return -1;
   }
-
-  public static void ShowAllPaths()
-  {
-    Console.WriteLine("All Paths:");
-    for (int i = 0; i < AllPaths.Count; i++)
-    {
-      Console.WriteLine($"Path {i + 1}:");
-      ShowPath(AllPaths[i]);
-    }
-  }
-
-
-
-  public static void WriteInColor(ConsoleColor color, string text)
-  {
-    ConsoleColor originalColor = Console.ForegroundColor;
-    Console.ForegroundColor = color;
-    Console.Write(text);
-    Console.ForegroundColor = originalColor;
-  }
-
 
 }

@@ -48,57 +48,36 @@ public class Custom3
     // Console.ReadKey(true);
 
 
-    if (TimeLastScan == 0)
+    if (TimeLastScan <= 1 && BotEnergy > 50)
     {
-      // sachant que 1 = North, 2 = West, 3 = South et 4 = East
-      for (int i = Board.TLcorner.x; i < Board.BotPosition.x; i++)
-      {
-        if (Board.Map.ContainsKey(Board.XYtoMapKey(i, Board.BotPosition.y)))
-          if (Board.Map[Board.XYtoMapKey(i, Board.BotPosition.y)] == CaseState.Ennemy)
-            return BotHelper.ActionShoot((MoveDirection)2);
-      }
-
-      for (int i = Board.BotPosition.x + 1; i <= Board.BRcorner.x; i++)
-      {
-        if (Board.Map.ContainsKey(Board.XYtoMapKey(i, Board.BotPosition.y)))
-          if (Board.Map[Board.XYtoMapKey(i, Board.BotPosition.y)] == CaseState.Ennemy)
-            return BotHelper.ActionShoot((MoveDirection)4);
-      }
-
-      for (int i = Board.BRcorner.y; i > Board.BotPosition.y; i++)
-      {
-        if (Board.Map.ContainsKey(Board.XYtoMapKey(Board.BotPosition.x, i)))
-          if (Board.Map[Board.XYtoMapKey(Board.BotPosition.x, i)] == CaseState.Ennemy)
-            return BotHelper.ActionShoot((MoveDirection)1);
-      }
-
-      for (int i = Board.BotPosition.y + 1; i >= Board.TLcorner.y; i++)
-      {
-        if (Board.Map.ContainsKey(Board.XYtoMapKey(Board.BotPosition.x, i)))
-          if (Board.Map[Board.XYtoMapKey(Board.BotPosition.x, i)] == CaseState.Ennemy)
-            return BotHelper.ActionShoot((MoveDirection)3);
-      }
+      int Direction = Board.CheckAndShootEnemy();
+      if (Direction != -1) return BotHelper.ActionShoot((MoveDirection)Direction);
     }
 
     if (HasBeenHit == true && BotEnergy >= 100)
-      return BotHelper.ActionShield((ushort)(BotEnergy / 10));
+    {
+      return BotHelper.ActionShield(10);
+      HasBeenHit = false;
+    }
+
+    if (BotEnergy > 200 && CurrentShieldLevel < 20)
+      return BotHelper.ActionShield(50);
 
     if (BotEnergy < 50 && CurrentShieldLevel > 0) // je recupere le shield si j'en ai
       return BotHelper.ActionShield(0);
 
 
-
-
     // RIP PathFinding
     // MoveBot.GoEnergy();
 
-    int Move = MoveBot.GoCloseEnergy();
+    int Move = MoveBot.GoCloseEnergy(); // On se dirige vers l'énergie la plus proche qui a le plus haut score dans la heatmap
 
-    // On déplace le bot au hazard
-    if (Move == -1) Move = MoveBot.GoBestHeatMap();
-    if (Move == -1) Move = MoveBot.RandomMoveSafe();
-    if (Move == -1) Move = MoveBot.TryEscape();
-    if (Move == -1) return BotHelper.ActionNone();
+    // On déplace le bot au hasard
+    if (Move == -1) Move = MoveBot.GoBestHeatMap(); // Sinon, on se déplace vers la case avec le score le plus élevé dans la heatmap
+    // if (Move == -1) Move = MoveBot.RandomMoveSafe();
+    if (Move == -1) Move = MoveBot.TryEscape(); // Si le bot est dans une impasse
+    if (Move == -1) return BotHelper.ActionNone(); // Alors le bot est coincé entre 4 murs :)
+
 
     Board.updateBotPosition(Move);
     return BotHelper.ActionMove((MoveDirection)Move);
@@ -163,14 +142,9 @@ public class Custom3
       }
     }
 
-    // Board.DisplayMap();
+    Display.DisplayMap();
     Board.UpdateHeatMap();
-    // Board.DisplayHeatMap();
+    Display.DisplayHeatMap();
   }
-
-
-
 }
-
-
 

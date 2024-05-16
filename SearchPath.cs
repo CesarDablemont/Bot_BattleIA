@@ -9,8 +9,8 @@ public class SearchPath
 
   public bool DoSearch(List<MapPoint> path, MapPoint origin, MapPoint to)
   {
-    Board.DisplayMap();
-    Board.ShowAllPaths();
+    Display.DisplayMap();
+    Display.ShowAllPaths();
 
     if (path.Count > Board.BestPathLength)
       return false;
@@ -60,7 +60,7 @@ public class SearchPath
           {
             int i = Board.AllPaths.Count();
             Console.Write($"Path found {i}: ");
-            Board.ShowPath(Board.AllPaths[i - 1]);
+            Display.ShowPath(Board.AllPaths[i - 1]);
           }
           break;
         default:

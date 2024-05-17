@@ -19,9 +19,9 @@ class Program
   // Identifiant du bot
   // https://www.guidgenerator.com/
   // il faut utiliser le même identifiant pour le cockpit !
-  // private static string id = "92718bc5-563f-4859-9b16-7755a32b35a0";
-  private static string id = "6bab03cf-fe94-431f-8c8b-16b18aaaa7ed";
-  
+  private static string id = "92718bc5-563f-4859-9b16-7755a32b35a0";
+  // private static string id = "6bab03cf-fe94-431f-8c8b-16b18aaaa7ed";
+
   // Nom du bot
   private static string botName = "Bot custom 3 (Cesar)";
   // le code du bot

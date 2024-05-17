@@ -49,19 +49,20 @@ public class Custom3
 
     // SHIELD
 
-    if (HasBeenHit == true && BotEnergy >= 100)
-    {
-      return BotHelper.ActionShield(10);
-      HasBeenHit = false;
-    }
+    // if (HasBeenHit == true && BotEnergy >= 100)
+    // {
+    //   return BotHelper.ActionShield(10);
+    //   HasBeenHit = false;
+    // }
+    // else
 
     if (BotEnergy > 1000 && CurrentShieldLevel < 100)
       return BotHelper.ActionShield(200);
 
-    if (BotEnergy > 200 && CurrentShieldLevel < 20)
-      return BotHelper.ActionShield(50);
+    else if (BotEnergy > 400 && CurrentShieldLevel < 50)
+      return BotHelper.ActionShield(100);
 
-    if (BotEnergy < 50 && CurrentShieldLevel > 0) // je recupere le shield si j'en ai
+    else if (BotEnergy < 50 && CurrentShieldLevel > 0) // je recupere le shield si j'en ai
       return BotHelper.ActionShield(0);
 
 
@@ -71,7 +72,7 @@ public class Custom3
     if (TimeLastScan <= 1 && BotEnergy > 50 && Direction != -1)
       return BotHelper.ActionShoot((MoveDirection)Direction);
 
-    if (BotEnergy > 5000 && Direction != -1)
+    else if (BotEnergy > 5000 && Direction != -1)
       return BotHelper.ActionShoot((MoveDirection)Direction);
 
 
